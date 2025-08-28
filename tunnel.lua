@@ -61,14 +61,17 @@ function Tunnel.bind (name, interface)
 			end
 
 			if (reqId) then
-				local result = { interface[func] (client or source, unpack (args)) };
-				if (isElement (localPlayer)) then
+				local isClient = isElement (localPlayer);
+				if (isClient) then
+					local result = { interface[func] (unpack (args)) };
 					return triggerServerEvent ('__tunnel:callback', resourceRoot, reqId, result);
 				end
 
 				if (not isElement (client)) then
 					return false;
 				end
+
+				local result = { interface[func] (client, unpack (args)) };
 				return triggerClientEvent (client, '__tunnel:callback', resourceRoot, reqId, result);
 			end
 			return false;
