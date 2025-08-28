@@ -6,9 +6,7 @@ local callbacks, callbacksId = { }, 0;
 
 -- method's resource's
 function Tunnel.get (name, target)
-	local obj = { };
-
-	setmetatable (obj, {
+	return setmetatable ({ }, {
 		__index = function (_, func)
 			return function (...)
 				callbacksId = (callbacksId + 1);
@@ -47,8 +45,6 @@ function Tunnel.get (name, target)
 			end
 		end,
 	});
-
-	return obj;
 end
 
 function Tunnel.bind (name, interface)
