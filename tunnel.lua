@@ -17,6 +17,7 @@ function Tunnel.get (name, target)
 				local promise = { };
 				promise.try = function (self, fn) promise._try = fn return promise end
 				promise.catch = function (self, fn) promise._catch = fn return promise end
+				promise.timeout = function (self, ms) setTimer (function () if (isTimer (sourceTimer)) then killTimer (sourceTimer) end if (not callbacks[reqId]) then return false end if (type (promise._catch) == 'function') then promise._catch ('timeout') end return true end, ms, 1) return promise end
 
 				callbacks[reqId] = function (status, ...)
 					local args = { ... };
