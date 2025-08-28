@@ -3,4 +3,7 @@
 	<info author = 'dracoN*' type = 'script' version = '1.0.0'/>
 	<!-- SCRIPT' SRC's -->
 	<script src = 'tunnel.lua' type = 'shared' cache = 'false'/>
+
+	<script src = '__tests__/server.lua'/>
+	<script src = '__tests__/client.lua' type = 'client' cache = 'false'/>
 </dracon-dev>
