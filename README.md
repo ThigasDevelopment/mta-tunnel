@@ -67,6 +67,24 @@ Tunnel.bind ('api', interface);
 - **Erro:**  
   O callback `catch` é chamado quando ocorre falha ou retorno inválido.
 
+- **Timeout:**  
+  Exemplo de uso do método `timeout` na promise:
+
+```lua
+local api = Tunnel.get ('api');
+
+api.someFunction (100):try (
+	function (...)
+		iprint ('success', ...);
+	end
+):catch (
+	function (error)
+		print ('Error: ' .. tostring (error));
+	end
+):timeout (1000);
+```
+Esse exemplo utiliza o método `timeout` para tratar situações em que não há resposta dentro do tempo limite definido (em milissegundos), caso não tenha uma resposta no tempo determinado o `error` vem como `timeout`.
+
 ## 📝 Observações
 
 - O sistema não faz requisições HTTP externas, mas sim simula o padrão de requisições/respostas usando eventos do MTA.
