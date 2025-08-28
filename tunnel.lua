@@ -36,7 +36,7 @@ function Tunnel.get (name, target)
 					return false;
 				end
 
-				if (EVENT_SIDE == 'onClient') then
+				if (isElement (localPlayer)) then
 					triggerServerEvent ('__tunnel:' .. name, resourceRoot, func, { ... }, reqId);
 				else
 					triggerClientEvent ((target or root), '__tunnel:' .. name, resourceRoot, func, { ... }, reqId);
@@ -62,7 +62,7 @@ function Tunnel.bind (name, interface)
 
 			if (reqId) then
 				local result = { interface[func] (client or source, unpack (args)) };
-				if (EVENT_SIDE == 'onClient') then
+				if (isElement (localPlayer)) then
 					return triggerServerEvent ('__tunnel:callback', resourceRoot, reqId, result);
 				end
 
