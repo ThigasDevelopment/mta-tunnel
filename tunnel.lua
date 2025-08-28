@@ -106,7 +106,7 @@ function Tunnel.bind (name, interface)
 					return triggerClientEvent (client, '__tunnel:callback', resourceRoot, reqId, { false, message });
 				end
 
-				local result = { interface[func] (client, unpack (args)) };
+				local result = { interface[func] (client, unpack (message)) };
 				return triggerClientEvent (client, '__tunnel:callback', resourceRoot, reqId, result);
 			end
 			return false;
