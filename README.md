@@ -36,7 +36,7 @@ api.someFunction (100):try (
 ```lua
 local interface = { };
 
-function interface.someFunction (num)
+function interface.someFunction (player, num)
     -- lógica aqui
     return true, 'OK';
 end
@@ -84,6 +84,51 @@ api.someFunction (100):try (
 ):timeout (1000);
 ```
 Esse exemplo utiliza o método `timeout` para tratar situações em que não há resposta dentro do tempo limite definido (em milissegundos), caso não tenha uma resposta no tempo determinado o `error` vem como `timeout`.
+
+- **Middleware nativo:**
+  Exemplo de como registrar e usar middlewares com o Tunnel:
+
+```lua
+-- Middleware de autenticação
+Tunnel.middleware (
+	function (func, args, player)
+		if (not isPlayerAuthorized (player)) then
+			return false, 'Acesso negado!';
+		end
+
+		return true;
+	end
+);
+
+-- Middleware de logging
+Tunnel.middleware (
+	function (func, args, player)
+		outputServerLog (('Tunnel: %s chamado por %s'):format (func, getPlayerName (player)));
+		return true;
+	end
+);
+
+-- Middleware para modificar argumentos
+Tunnel.middleware (
+	function (func, args, player)
+		if (func == 'someFunction') then
+			args[1] = 999;
+		end
+		
+		return true, args;
+	end
+);
+
+local interface = { };
+
+function interface.someFunction (player, num)
+	print ('numero: ' .. tostring (num));
+    return true, 'OK';
+end
+
+Tunnel.bind ('api', interface);
+```
+No exemplo acima, todos os middlewares registrados em `Tunnel.middleware` serão executados em ordem antes da função principal. Se algum retornar `false`, a execução é interrompida e o erro é enviado ao cliente. Se retornar novos argumentos, eles serão usados na chamada da função.
 
 ## 📝 Observações
 
