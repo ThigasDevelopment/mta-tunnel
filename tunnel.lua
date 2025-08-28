@@ -1,8 +1,41 @@
 -- class's resource's
 Tunnel = { };
+Tunnel.middleware = { };
 
 -- callback's resource's
 local callbacks, callbacksId = { }, 0;
+
+-- middleware's resource's
+setmetatable (Tunnel.middleware, {
+	__call = function (self, func)
+		local funcType = type (func);
+		if (funcType ~= 'function') then
+			return false;
+		end
+
+		self[#self + 1] = func;
+		return true;
+	end
+});
+
+local function runMiddlewares (func, args, player)
+	local items = Tunnel.middleware;
+	if (#items < 1) then
+		return true, args;
+	end
+
+	for _, middleware in pairs (items) do
+		local status, message, new = middleware (func, args, player);
+		if (not status) then
+			return false, message;
+		end
+
+		if (new) then
+			args = new;
+		end
+	end
+	return true, args;
+end
 
 -- method's resource's
 function Tunnel.get (name, target)
@@ -66,6 +99,11 @@ function Tunnel.bind (name, interface)
 
 				if (not isElement (client)) then
 					return false;
+				end
+
+				local status, message = runMiddlewares (func, args, client);
+				if (not status) then
+					return triggerClientEvent (client, '__tunnel:callback', resourceRoot, reqId, { false, message });
 				end
 
 				local result = { interface[func] (client, unpack (args)) };
